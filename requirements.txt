@@ -1,4 +1,2 @@
-h5py==3.4.0
 numpy==1.21.2
-pyscf==1.7.6.post1
 scipy==1.7.1
