@@ -31,6 +31,7 @@ def calc_nuclear_repulsion_energy(mol_):
     # Calculating Nuclear Repulsion
     # index_A, index_B are used to select atom charges from charges list
     # atom_A, atom_B are used to get numpy nd-arrays
+    # enumerate ref: https://www.geeksforgeeks.org/enumerate-in-python/
     for index_A, atom_A in enumerate(coordinates_atom):
         for index_B, atom_B in enumerate(coordinates_atom):
             if index_A == index_B:  # pointing to same atom
@@ -42,12 +43,11 @@ def calc_nuclear_repulsion_energy(mol_):
             Rb = atom_B
             R = np.linalg.norm(Ra - Rb)
             Enuc += za_zb / R
-            
+
     return Enuc * 0.5  # because B > A condition
 
 
 def calc_initial_density(mol_):
-    Duv = ""
     """
     calc_initial_density - Function to calculate the initial guess density
 
@@ -59,19 +59,12 @@ def calc_initial_density(mol_):
     """
 
     num_aos = mol_.nao  # Number of atomic orbitals, dimensions of the mats
-    """
-    Replace with your implementation
-
-    While we could do many things here, lets start with using the 1e Integrals
-    as the guess. This is equivalent to returning an (mol.nao x mol.nao) double
-    matrix of zeros.
-    """
+    Duv = np.zeros((num_aos, num_aos), dtype=np.double)  # num_aos X num_aos zero matrix as initial guess density matrix
 
     return Duv
 
 
 def calc_hcore_matrix(Tuv_, Vuv_):
-    h_core = ""
     """
     calc_hcore_matrix - Computes the 1 electron core matrix
 
@@ -88,7 +81,7 @@ def calc_hcore_matrix(Tuv_, Vuv_):
 
     Per the readme, this is a simple addition of the two matrices
     """
-
+    h_core = Tuv_ + Vuv_ # addition of 2 numpy nd arrays
     return h_core
 
 
