@@ -4,7 +4,7 @@ for the HF SCF Procedure
 """
 
 import numpy as np
-import scipy as sp
+import scipy.linalg
 
 
 def calc_nuclear_repulsion_energy(mol_):
@@ -82,7 +82,7 @@ def calc_hcore_matrix(Tuv_, Vuv_):
 
     Per the readme, this is a simple addition of the two matrices
     """
-    h_core = Tuv_ + Vuv_  # addition of 2 numpy nd arrays
+    h_core = np.add(Tuv_, Vuv_)  # addition of 2 numpy nd arrays
     return h_core
 
 
@@ -103,12 +103,17 @@ def calc_fock_matrix(mol_, h_core_, er_ints_, Duv_):
 
     Fuv = h_core_.copy()  # Takes care of the Huv part of the fock matrix
     num_aos = mol_.nao  # Number of atomic orbitals, dimension of the mats
-
     # Calculating the Coulomb term and Exchange Term
+    # for i in range(num_aos):
+    #     for j in range(num_aos):
+    #         for x in range(num_aos):
+    #             for y in range(num_aos):
+    #                 Fuv[i, j] += Duv_[x, y] * (er_ints_[i, j, y, x] - 0.5 * er_ints_[i, x, y, j])
+
     for mu in range(num_aos):
         for nu in range(num_aos):
-            Fuv[mu, nu] += ((er_ints_[mu, nu] * Duv_).sum()) - ((0.5 * Duv_ * er_ints_[mu, :, nu]).sum())
-
+            Fuv[mu, nu] += np.sum(np.multiply(Duv_, er_ints_[mu, nu]), dtype=np.double) - \
+                           np.sum(np.multiply(Duv_, er_ints_[mu, :, nu] * 0.5), dtype=np.double)
     return Fuv
 
 
@@ -126,16 +131,7 @@ def solve_Roothan_equations(Fuv_, Suv_):
         mo_coefficients: a matrix of the eigenvectors of the solution
 
     """
-
-    """
-    Replace with your implementation
-
-    The Roothan Equations, which are of the form FC=SCe can be solved
-    directly from the proper use of scipy.linalg.eigh since this is a
-    symmetric hermitian matrix. Take a look at the documentation for that
-    function and you can implement this in one line.
-    """
-    mo_energies, mo_coeffs = sp.linalg.eigh(Fuv_, Suv_)
+    mo_energies, mo_coeffs = scipy.linalg.eigh(Fuv_, Suv_)
     return mo_energies.real, mo_coeffs.real
 
 
@@ -156,8 +152,12 @@ def form_density_matrix(mol_, mo_coeffs_):
 
     nelec = mol_.nelec[0]  # Number of occupied orbitals
     num_aos = mol_.nao  # Number of atomic orbitals, dimensions of the mats
-    Duv = np.zeros(mol_.nao, mol_.nao, dtype=np.double)
+    Duv = np.zeros((mol_.nao, mol_.nao), dtype=np.double)
 
+    for a in range(num_aos):
+        for b in range(num_aos):
+            for c in range(num_aos):
+                Duv[a, b] += Duv[a, b] + (2 * (mo_coeffs_[a, c] * mo_coeffs_[b, c]))
     """
     Replace with your implementation
 
@@ -184,11 +184,6 @@ def calc_total_energy(Fuv_, Huv_, Duv_, Enuc_):
         Etot: the total energy of the molecule
     """
 
-    """
-    Replace with your implementation
-
-    Should be able to implement this in one line with matrix arithmatic
-
-    """
+    Etot = (0.5 * (Duv_ * (Huv_ + Fuv_)).sum()) + Enuc_
 
     return Etot
