@@ -4,6 +4,7 @@ for the HF SCF Procedure
 """
 
 import numpy as np
+import scipy as sp
 
 
 def calc_nuclear_repulsion_energy(mol_):
@@ -81,7 +82,7 @@ def calc_hcore_matrix(Tuv_, Vuv_):
 
     Per the readme, this is a simple addition of the two matrices
     """
-    h_core = Tuv_ + Vuv_ # addition of 2 numpy nd arrays
+    h_core = Tuv_ + Vuv_  # addition of 2 numpy nd arrays
     return h_core
 
 
@@ -103,21 +104,10 @@ def calc_fock_matrix(mol_, h_core_, er_ints_, Duv_):
     Fuv = h_core_.copy()  # Takes care of the Huv part of the fock matrix
     num_aos = mol_.nao  # Number of atomic orbitals, dimension of the mats
 
-    """
-    Replace with your implementation
-
-    Here you will do the summation of the last two terms in the Fock matrix
-    equation involving the two electron Integrals
-
-    Hint: You can do this with explicit loops over matrix indices, whichwill
-          have many for loops.
-
-    This can also be done with numpy aggregations, bonus points if you
-    implement this with only two loops.
-
-    For example, the first term can be implemented like the following:
-    (er_ints[mu,nu]*Duv).sum()
-    """
+    # Calculating the Coulomb term and Exchange Term
+    for mu in range(num_aos):
+        for nu in range(num_aos):
+            Fuv[mu, nu] += ((er_ints_[mu, nu] * Duv_).sum()) - ((0.5 * Duv_ * er_ints_[mu, :, nu]).sum())
 
     return Fuv
 
@@ -145,7 +135,7 @@ def solve_Roothan_equations(Fuv_, Suv_):
     symmetric hermitian matrix. Take a look at the documentation for that
     function and you can implement this in one line.
     """
-
+    mo_energies, mo_coeffs = sp.linalg.eigh(Fuv_, Suv_)
     return mo_energies.real, mo_coeffs.real
 
 
