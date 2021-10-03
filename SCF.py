@@ -4,7 +4,6 @@ for the HF SCF Procedure
 """
 
 import numpy as np
-import scipy as sp
 
 
 def calc_nuclear_repulsion_energy(mol_):
@@ -19,22 +18,36 @@ def calc_nuclear_repulsion_energy(mol_):
         Enuc: The n-e repulsion energy
     """
 
+    # Formula to calculate nuclear repulsion in molecule = product of charges of atoms / distance between them
+    # Calculating the distance between the atoms using np.linalg.norm
+    coordinates_atom = mol_.atom_coords()  # (x,y,z)
     charges = mol_.atom_charges()
-    coords = mol_.atom_coords()
+
+    # did not construct a matrix so commenting it out
+    # distance_matrix = np.zeros((3, 3), dtype=np.double)
+
     Enuc = 0
-    distance_matrix = np.zeros((3, 3), dtype=np.double)
 
-    """
-    Replace with your implementation
-
-    Step 1. calcuate (3x3) distance matrix between all atoms
-    Step 2. Loop over atoms and calculate Enuc from formulat in Readme
-    """
-
-    return Enuc
+    # Calculating Nuclear Repulsion
+    # index_A, index_B are used to select atom charges from charges list
+    # atom_A, atom_B are used to get numpy nd-arrays
+    for index_A, atom_A in enumerate(coordinates_atom):
+        for index_B, atom_B in enumerate(coordinates_atom):
+            if index_A == index_B:  # pointing to same atom
+                continue
+            za = charges[index_A]
+            zb = charges[index_B]
+            za_zb = za * zb
+            Ra = atom_A
+            Rb = atom_B
+            R = np.linalg.norm(Ra - Rb)
+            Enuc += za_zb / R
+            
+    return Enuc * 0.5  # because B > A condition
 
 
 def calc_initial_density(mol_):
+    Duv = ""
     """
     calc_initial_density - Function to calculate the initial guess density
 
@@ -58,6 +71,7 @@ def calc_initial_density(mol_):
 
 
 def calc_hcore_matrix(Tuv_, Vuv_):
+    h_core = ""
     """
     calc_hcore_matrix - Computes the 1 electron core matrix
 
@@ -94,7 +108,7 @@ def calc_fock_matrix(mol_, h_core_, er_ints_, Duv_):
     """
 
     Fuv = h_core_.copy()  # Takes care of the Huv part of the fock matrix
-    num_aos = mol_.nao    # Number of atomic orbitals, dimension of the mats
+    num_aos = mol_.nao  # Number of atomic orbitals, dimension of the mats
 
     """
     Replace with your implementation
