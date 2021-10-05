@@ -104,11 +104,6 @@ def calc_fock_matrix(mol_, h_core_, er_ints_, Duv_):
     Fuv = h_core_.copy()  # Takes care of the Huv part of the fock matrix
     num_aos = mol_.nao  # Number of atomic orbitals, dimension of the mats
     # Calculating the Coulomb term and Exchange Term
-    # for i in range(num_aos):
-    #     for j in range(num_aos):
-    #         for x in range(num_aos):
-    #             for y in range(num_aos):
-    #                 Fuv[i, j] += Duv_[x, y] * (er_ints_[i, j, y, x] - 0.5 * er_ints_[i, x, y, j])
 
     for mu in range(num_aos):
         for nu in range(num_aos):
@@ -154,10 +149,10 @@ def form_density_matrix(mol_, mo_coeffs_):
     num_aos = mol_.nao  # Number of atomic orbitals, dimensions of the mats
     Duv = np.zeros((mol_.nao, mol_.nao), dtype=np.double)
 
-    for a in range(num_aos):
-        for b in range(num_aos):
-            for c in range(num_aos):
-                Duv[a, b] += Duv[a, b] + (2 * (mo_coeffs_[a, c] * mo_coeffs_[b, c]))
+    for mu in range(num_aos):
+        for nu in range(num_aos):
+            for a in range(nelec):
+                Duv[mu, nu] += 2 * (mo_coeffs_[mu, a] * mo_coeffs_[nu, a])
     """
     Replace with your implementation
 

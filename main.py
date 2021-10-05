@@ -77,7 +77,7 @@ def main():
     # Convergence Criteria
     E_conv_threshold = 1.0E-10
     D_conv_threshold = 1.0E-8
-    max_iterations = 1000
+    max_iterations = 100
 
     # get the integrals
     # Overlap Integrals
