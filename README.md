@@ -311,6 +311,8 @@ mol_c[0,:] = [-1.00154358e+00  2.33624458e-01  4.97111543e-16
               -4.99600361e-16]           
 ```
 
+**Note**: The signs on the eigenvectors may differ depending on which version of scipy you end up using, so you just want to check that the values that are well above zero are the same.
+
 ##### Step 4c. Calculate the Total Energy of the Current Iteration
 
 *Function Stub*: `calc_tot_energy`
