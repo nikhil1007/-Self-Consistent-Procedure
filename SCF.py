@@ -103,8 +103,8 @@ def calc_fock_matrix(mol_, h_core_, er_ints_, Duv_):
 
     Fuv = h_core_.copy()  # Takes care of the Huv part of the fock matrix
     num_aos = mol_.nao  # Number of atomic orbitals, dimension of the mats
-    # Calculating the Coulomb term and Exchange Term
 
+    # Calculating the Coulomb term and Exchange Term
     for mu in range(num_aos):
         for nu in range(num_aos):
             Fuv[mu, nu] += np.sum(np.multiply(Duv_, er_ints_[mu, nu]), dtype=np.double) - \
