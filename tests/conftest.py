@@ -2,7 +2,7 @@
 The PyTest Configuration code
 """
 import pytest
-from mol import mol
+from main import main
 
 
 @pytest.fixture
@@ -15,4 +15,11 @@ def mol_h2o():
         + "1 1.638036840407   1.136548822547  -0.000000000000;" \
         + "1 -1.638036840407   1.136548822547  -0.000000000000"
 
-    return mol(atom, 7, 5, 7)
+    return ""
+
+# def get_Tuv():
+#     return main.Tuv
+#
+# def get_Huv():
+#     return main.Huv
+
