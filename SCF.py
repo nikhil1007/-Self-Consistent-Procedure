@@ -127,6 +127,7 @@ def solve_Roothan_equations(Fuv_, Suv_):
 
     """
     mo_energies, mo_coeffs = scipy.linalg.eigh(Fuv_, Suv_)
+    print(mo_coeffs[0,:])
     return mo_energies.real, mo_coeffs.real
 
 
