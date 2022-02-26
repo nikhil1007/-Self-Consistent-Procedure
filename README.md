@@ -1,4 +1,4 @@
-# Assignment #2 Hartree-Fock Self-Consistent Field Program
+# Implementing Hartree-Fock Self-Consistent Field Program using python
 
 This assignment is meant to give you some experience using NumPy and SciPy
 in a scientific code.
